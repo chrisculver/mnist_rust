@@ -19,6 +19,19 @@ impl Sigmoid for f64 {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn some_sigmoid_values() {
+        // e^0 = 1 so sigmoid(0.0) = 1/(1+1) = 0.5
+        assert_eq!(0.5, (0_f64).sigmoid());
+
+        assert_eq!(0.25, (0_f64).sigmoid_prime());
+    }
+}
+
+
 struct Vector {
     elems: Vec<f64>,
 }
@@ -98,23 +111,21 @@ struct Network {
 
 impl Network {
     fn new(sizes: Vec<usize>) -> Self {
+        let mut weights = Vec::new();
+        let mut biases = Vec::new();
+
+        for i in 0..sizes.len() {
+            if i != 0 {
+                weights.push(Matrix::new(sizes[i - 1], sizes[i]));
+                biases.push(Vector::new(sizes[i]));
+            }
+        }
+
         Network {
             num_layers: sizes.len(),
             sizes: sizes,
             weights: Vec::<Matrix>::new(),
             biases: Vec::<Vector>::new(),
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn some_sigmoid_values() {
-        // e^0 = 1 so sigmoid(0.0) = 1/(1+1) = 0.5
-        assert_eq!(0.5, (0_f64).sigmoid());
-
-        assert_eq!(0.25, (0_f64).sigmoid_prime());
     }
 }
