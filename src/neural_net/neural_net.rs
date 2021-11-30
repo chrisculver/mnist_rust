@@ -44,12 +44,20 @@ impl Network {
         }
     }
 
-    fn feedforward(&self, mut a: Vec<f64>) -> Vec<f64> {
-        for i in 0..(self.num_layers - 1) {
-            //    a = self.weights[i].dot(&Vector::from(a)) + self.biases[i];
+    fn feedforward(&self, a: Vector) -> Vector {
+        println!("Feeding forward");
+        let mut a = Vector::from(a);
+        for i in 0..a.len() {
+            println!("{}", a[i]);
         }
-        for elem in &mut a {
-            *elem = elem.sigmoid();
+        println!("Getting new a");
+        for i in 0..(self.num_layers - 1) {
+            a = &(self.weights[i].times(a)) + &self.biases[i];
+        }
+        println!("New a has len {}", a.len());
+
+        for i in 0..a.len() {
+            a[i] = a[i].sigmoid();
         }
         a
     }
@@ -76,5 +84,32 @@ mod tests {
         assert_eq!(net.weights.len(), 2);
         assert_eq!(net.weights[0].shape(), (24, 5));
         assert_eq!(net.weights[1].shape(), (5, 2));
+    }
+
+    #[test]
+    fn test_minimal_network() {
+        let mut net = Network::new(vec![2, 1]);
+        println!("{}", net.biases.len());
+        println!("{}", net.weights.len());
+        for b in &mut net.biases {
+            println!("{}", b.len());
+            for i in 0..b.len() {
+                b[i] = 0 as f64;
+            }
+        }
+
+        for w in &mut net.weights {
+            println!("{}", w.shape().0);
+            println!("{}", w.shape().1);
+            let (nr, nc) = w.shape();
+            for r in 0..nr {
+                for c in 0..nc {
+                    w[(r, c)] = 0.0;
+                }
+            }
+        }
+
+        let res = net.feedforward(Vector::from(vec![0., 0.]));
+        assert_eq!(res, Vector::from(vec![0.5]))
     }
 }

@@ -36,9 +36,9 @@ impl IndexMut<usize> for Vector {
     }
 }
 
-impl ops::Add<Vector> for Vector {
+impl ops::Add<&Vector> for &Vector {
     type Output = Vector;
-    fn add(self, rhs: Vector) -> Vector {
+    fn add(self, rhs: &Vector) -> Vector {
         let mut res = Vector {
             elems: Vec::<f64>::new(),
         };
@@ -61,4 +61,5 @@ mod tests {
         assert_eq!(v[3], 1.0_f64);
         assert_eq!(v[2], 0.0_f64);
     }
+
 }
