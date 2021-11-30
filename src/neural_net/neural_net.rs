@@ -26,8 +26,8 @@ struct Network {
 
 impl Network {
     fn new(sizes: Vec<usize>) -> Self {
-        let mut weights = Vec::new();
-        let mut biases = Vec::new();
+        let mut weights = Vec::<Matrix>::new();
+        let mut biases = Vec::<Vector>::new();
 
         for i in 0..sizes.len() {
             if i != 0 {
@@ -39,9 +39,19 @@ impl Network {
         Network {
             num_layers: sizes.len(),
             sizes: sizes,
-            weights: Vec::<Matrix>::new(),
-            biases: Vec::<Vector>::new(),
+            weights: weights,
+            biases: biases,
         }
+    }
+
+    fn feedforward(&self, mut a: Vec<f64>) -> Vec<f64> {
+        for i in 0..(self.num_layers - 1) {
+            //    a = self.weights[i].dot(&Vector::from(a)) + self.biases[i];
+        }
+        for elem in &mut a {
+            *elem = elem.sigmoid();
+        }
+        a
     }
 }
 
@@ -59,8 +69,12 @@ mod tests {
 
     #[test]
     fn test_network_size() {
-        let net = Network::new(vec![2, 5, 2]);
+        let net = Network::new(vec![24, 5, 2]);
         assert_eq!(net.biases[0].len(), 5);
         assert_eq!(net.biases[1].len(), 2);
+
+        assert_eq!(net.weights.len(), 2);
+        assert_eq!(net.weights[0].shape(), (24, 5));
+        assert_eq!(net.weights[1].shape(), (5, 2));
     }
 }

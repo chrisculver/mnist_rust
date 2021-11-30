@@ -1,3 +1,5 @@
+use crate::neural_net;
+use crate::neural_net::vector::Vector;
 use rand::prelude::*;
 use rand_distr::StandardNormal; // more efficient then Normal.
 use std::ops;
@@ -29,6 +31,16 @@ impl Matrix {
     pub fn shape(&self) -> (usize, usize) {
         (self.nr, self.nc)
     }
+
+    pub fn dot(&self, v: &Vector) -> Vector {
+        let mut res = Vector::new(v.len());
+        for r in 0..self.nr {
+            for c in 0..self.nc {
+                res[r] += self.elems[r][c] * v[c];
+            }
+        }
+        res
+    }
 }
 
 impl Index<usize> for Matrix {
@@ -51,6 +63,16 @@ impl IndexMut<(usize, usize)> for Matrix {
     }
 }
 
+impl From<Vec<f64>> for Vector {
+    fn from(v: Vec<f64>) -> Self {
+        let mut res = Vector::new(v.len());
+        for i in 0..v.len() {
+            res[i] = v[i];
+        }
+        res
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -67,5 +89,24 @@ mod tests {
         let shape = m.shape();
         assert_eq!(shape.0, m.elems.len());
         assert_eq!(shape.1, m.elems[0].len());
+    }
+
+    #[test]
+    fn dot_test() {
+        let mut m = Matrix::new(2, 3);
+        let mut v = Vector::new(3);
+        for i in 0..2 {
+            for j in 0..3 {
+                m[(i, j)] = (i * 3 + j) as f64;
+                v[j] = j as f64;
+            }
+        }
+        let r = m.dot(&v);
+
+        let mut expected = Vector::new(2);
+        v[0] = 5 as f64;
+        v[1] = 14 as f64;
+
+        assert_eq!(r, expected);
     }
 }

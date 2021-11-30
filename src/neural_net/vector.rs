@@ -3,6 +3,7 @@ use rand_distr::StandardNormal; // more efficient then Normal.
 use std::ops;
 use std::ops::{Index, IndexMut};
 
+#[derive(PartialEq, Debug)]
 pub struct Vector {
     elems: Vec<f64>,
 }
@@ -46,5 +47,18 @@ impl ops::Add<Vector> for Vector {
         }
 
         res
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn index_tests() {
+        let mut v = Vector::new(4);
+        v[3] = 1.0;
+        v[2] = 0.0;
+        assert_eq!(v[3], 1.0_f64);
+        assert_eq!(v[2], 0.0_f64);
     }
 }
