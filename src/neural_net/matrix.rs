@@ -32,9 +32,11 @@ impl Matrix {
         (self.nr, self.nc)
     }
 
-    pub fn dot(&self, v: &Vector) -> Vector {
-        let mut res = Vector::new(v.len());
+    pub fn times(&self, v: &Vector) -> Vector {
+        let mut res = Vector::new(self.nr);
+
         for r in 0..self.nr {
+            res[r]=0 as f64;
             for c in 0..self.nc {
                 res[r] += self.elems[r][c] * v[c];
             }
@@ -101,11 +103,11 @@ mod tests {
                 v[j] = j as f64;
             }
         }
-        let r = m.dot(&v);
+        let r = m.times(&v);
 
         let mut expected = Vector::new(2);
-        v[0] = 5 as f64;
-        v[1] = 14 as f64;
+        expected[0] = 5 as f64;
+        expected[1] = 14 as f64;
 
         assert_eq!(r, expected);
     }
