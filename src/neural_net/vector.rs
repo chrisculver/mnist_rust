@@ -1,5 +1,6 @@
 use rand::prelude::*;
 use rand_distr::StandardNormal; // more efficient then Normal.
+use std::fmt;
 use std::ops;
 use std::ops::{Index, IndexMut};
 
@@ -43,10 +44,22 @@ impl ops::Add<&Vector> for &Vector {
             elems: Vec::<f64>::new(),
         };
         for i in 0..self.len() {
-            res[i] = self[i] + rhs[i]
+            res.elems.push(0 as f64);
+            res[i] = self[i] + rhs[i];
         }
 
         res
+    }
+}
+
+impl fmt::Display for Vector {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut s: String = "[".to_owned();
+        for v in &self.elems {
+            s += &(v.to_string() + ",");
+        }
+        s += "]";
+        write!(f, "{}", s)
     }
 }
 
@@ -61,5 +74,4 @@ mod tests {
         assert_eq!(v[3], 1.0_f64);
         assert_eq!(v[2], 0.0_f64);
     }
-
 }

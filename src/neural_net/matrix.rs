@@ -32,7 +32,7 @@ impl Matrix {
         (self.nr, self.nc)
     }
 
-    pub fn times(&self, v: Vector) -> Vector {
+    pub fn times(&self, v: &Vector) -> Vector {
         let mut res = Vector::new(self.nr);
 
         for r in 0..self.nr {
@@ -95,6 +95,7 @@ mod tests {
 
     #[test]
     fn dot_test() {
+        // this is complicated only by my initializations being poor
         let mut m = Matrix::new(2, 3);
         let mut v = Vector::new(3);
         for i in 0..2 {
@@ -103,7 +104,7 @@ mod tests {
                 v[j] = j as f64;
             }
         }
-        let r = m.times(v);
+        let r = m.times(&v);
 
         let mut expected = Vector::new(2);
         expected[0] = 5 as f64;

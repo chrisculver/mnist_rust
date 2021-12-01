@@ -31,7 +31,7 @@ impl Network {
 
         for i in 0..sizes.len() {
             if i != 0 {
-                weights.push(Matrix::new(sizes[i - 1], sizes[i]));
+                weights.push(Matrix::new(sizes[i], sizes[i - 1]));
                 biases.push(Vector::new(sizes[i]));
             }
         }
@@ -45,16 +45,11 @@ impl Network {
     }
 
     fn feedforward(&self, a: Vector) -> Vector {
-        println!("Feeding forward");
         let mut a = Vector::from(a);
-        for i in 0..a.len() {
-            println!("{}", a[i]);
-        }
-        println!("Getting new a");
+
         for i in 0..(self.num_layers - 1) {
-            a = &(self.weights[i].times(a)) + &self.biases[i];
+            a = &(self.weights[i].times(&a)) + &self.biases[i];
         }
-        println!("New a has len {}", a.len());
 
         for i in 0..a.len() {
             a[i] = a[i].sigmoid();
@@ -82,8 +77,8 @@ mod tests {
         assert_eq!(net.biases[1].len(), 2);
 
         assert_eq!(net.weights.len(), 2);
-        assert_eq!(net.weights[0].shape(), (24, 5));
-        assert_eq!(net.weights[1].shape(), (5, 2));
+        assert_eq!(net.weights[0].shape(), (5, 24));
+        assert_eq!(net.weights[1].shape(), (2, 5));
     }
 
     #[test]
